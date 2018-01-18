@@ -1,6 +1,6 @@
 {
   "name": "hurp",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Asynchronous modules for Node.js applications",
   "keywords": [
     "hurp",
@@ -10,5 +10,10 @@
   "bugs": "https://github.com/yaroslav-korotaev/hurp/issues",
   "license": "MIT",
   "author": "Yaroslav Korotaev <yaroslav.korotaev@gmail.com>",
-  "repository": "yaroslav-korotaev/hurp"
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "repository": "yaroslav-korotaev/hurp",
+  "dependencies": {}
 }
