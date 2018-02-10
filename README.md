@@ -1,5 +1,7 @@
 # hurp
 
+[![npm](https://img.shields.io/npm/v/hurp.svg)](https://www.npmjs.com/package/hurp)
+
 A little framework lets you design your application as a composition of asyncronous modules.
 
 Basically, async module is a class that can be initialized and destroyed asynchronously, e.g. with `async init()` and `async destroy()` methods. Modules can be hierarchical composed. This framework just implements this ideas and provides some kind of a dependency injection over them.
