@@ -2,9 +2,11 @@
 
 [![npm](https://img.shields.io/npm/v/hurp.svg)](https://www.npmjs.com/package/hurp)
 
-A little framework lets you design your application as a composition of asyncronous modules.
+A little framework lets you design your application as a composition of asynchronous modules.
 
-Basically, async module is a class that can be initialized and destroyed asynchronously, e.g. with `async init()` and `async destroy()` methods. Modules can be hierarchical composed. This framework just implements this ideas and provides some kind of a dependency injection over them.
+Basically, async module is a class that can be initialized and destroyed asynchronously, e.g. with `async init()` and `async destroy()` methods. Modules can be hierarchically composed. This framework just implements this ideas.
+
+It comes to help when you want to use simple manual dependency injection via constructor in application composed from a set of independed modules, some of which are requires to be asynchronously initialized.
 
 ## Installation
 
@@ -14,7 +16,7 @@ $ npm install hurp
 
 ## Usage
 
-Library exports classes `Module` and `App`, that designed to be overriden.
+Library exports classes `Module` and `App`, that designed to be overridden.
 
 ```js
 const hurp = require('hurp');
@@ -23,11 +25,9 @@ class Foo extends hurp.Module {}
 class App extends hurp.App {}
 ```
 
-### Async init and destroy
+### Async Init and Destroy
 
 With `async init()` you can wait for a connection to external service to be established, for some configuration to be loaded, for a listening port to be bound. With `async destroy()` it is possible to wait for a pending requests to be properly handled, for some state to be dumped to some storage.
-
-Modules are initialized and destroyed in hierarchical order, that is described below.
 
 ```js
 const hurp = require('hurp');
@@ -53,69 +53,26 @@ class Foo extends hurp.Module {
 
 ### Composition
 
-Modules can be composed. Just `use()` one module in another one. All the child modules will be initialized before the parent in order they were used. Parent will be destroyed first, and all it children next, in reverse order.
-
-Next example will output this:
-
-```
-init foo 1
-init foo 2
-init bar
-...
-destroy bar
-destroy foo 2
-destroy foo 1
-```
+Modules can be composed. Just `use()` module in another one. All the child modules will be initialized before the parent in order they were added and destroyed in reverse order after parent. This allows you to group domain-specific parts of large applications.
 
 ```js
 const hurp = require('hurp');
 
-class Foo extends hurp.Module {
-  constructor(options) {
-    super();
-    
-    this.tag = options.tag;
-  }
-  
-  async init() {
-    console.log(`init foo ${this.tag}`);
-  }
-  
-  async destroy() {
-    console.log(`destroy foo ${this.tag}`);
-  }
-}
+class Foo extends hurp.Module {}
 
 class Bar extends hurp.Module {
   constructor() {
     super();
     
-    const one = new Foo({ tag: '1' });
-    this.one = this.use(one);
-    
-    const two = new Foo({ tag: '2' });
-    this.two = this.use(two);
-  }
-  
-  async init() {
-    // this.one and this.two are already initialized
-    // and can be used from here
-    
-    console.log('init bar');
-  }
-  
-  async destroy() {
-    console.log('destroy bar');
-    
-    // this.one and this.two will be destroyed
-    // after this function execution
+    const foo = new Foo();
+    this.foo = this.use(foo);
   }
 }
 ```
 
 ### App
 
-Root module in the hierarchy called an App. It holds a reference to itself (described below) and exposes the `async boot()` and `async shutdown()` methods as entry points to the init and destroy chains.
+Root module in the hierarchy called an App. It exposes the `async boot()` and `async shutdown()` methods as entry points to the init and destroy chains.
 
 ```js
 const hurp = require('hurp');
@@ -147,26 +104,70 @@ async function main() {
 main();
 ```
 
-### Dependency injection
+### Dependency Injection
 
-All the modules has a reference to the app. Reference becomes available in the `async init()` method and can be used as an application-wide context, where all your subsystems are lives.
+Done manually via constructor. No magic. You need to explicitly pass all the module dependencies when creating the instance. This makes things flexible, portable and easy to unit-test.
 
-> Note: init/destroy order makes it easy to listen for requests after the database are initialized, so our data will be accessible. Also, during shutdown server will be closed before the connection to database are closed, so we safely can complete all the pending requests. Just `use()` database before server.
+```js
+const hurp = require('hurp');
 
-> Of course, real-life http server module will be a bit more complex than in that example.
+class Foo extends hurp.Module {
+  greet() {
+    return 'hello, world';
+  }
+}
+
+// Module Bar depends on Foo interface
+class Bar extends hurp.Module {
+  constructor(options) {
+    super();
+    
+    this.foo = options.foo;
+  }
+  
+  hello() {
+    const greeting = this.foo.greet();
+    console.log(greeting);
+  }
+}
+
+class App extends hurp.App {
+  constructor() {
+    super();
+    
+    const foo = new Foo();
+    this.foo = this.use(foo);
+    
+    const bar = new Bar({
+      foo,
+    });
+    this.bar = this.use(bar);
+  }
+}
+
+async function main() {
+  const app = new App();
+  await app.boot();
+  
+  app.bar.hello();
+}
+
+main();
+```
+
+### Application Context
+
+Root module becomes the application context. You can access any part of your application where you have an app reference.
 
 ```js
 const http = require('http');
 const hurp = require('hurp');
 
 function bootstrap(app) {
-  // You can use your favorite web framework right there,
-  // just place the app reference in it requests' context
+  // Use your favorite web framework here and place the app reference to it request context
   
   return async (req, res) => {
-    // Load some data from database
     const data = await app.db.get();
-    
     res.end(data);
   };
 }
@@ -181,27 +182,13 @@ class HttpServer extends hurp.Module {
   constructor(options) {
     super();
     
-    this.bootstrap = options.bootstrap;
-    this.server = null;
+    this.handler = options.handler;
+    this.server = http.createServer(this.handler);
   }
   
   async init() {
-    // Pass the running application reference into some function
-    // that initializes your web framework, so you can access the app
-    // from request handlers' context
-    const handler = this.bootstrap(this.app);
-    
-    this.server = http.createServer(handler);
-    
     await new Promise(resolve => {
       this.server.listen(3000, resolve);
-    });
-  }
-  
-  async destroy() {
-    await new Promise(resolve => {
-      this.server.once('close', resolve);
-      this.server.close();
     });
   }
 }
@@ -213,10 +200,18 @@ class App extends hurp.App {
     const db = new Database();
     this.db = this.use(db);
     
+    const handler = bootstrap(this);
     const server = new HttpServer({
-      bootstrap,
+      handler,
     });
     this.server = this.use(server);
   }
 }
+
+async function main() {
+  const app = new App();
+  await app.boot();
+}
+
+main();
 ```
