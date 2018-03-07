@@ -215,3 +215,77 @@ async function main() {
 
 main();
 ```
+
+## API
+
+### `Module`
+
+```js
+const hurp = require('hurp');
+
+class Foo extends hurp.Module {}
+
+const foo = new Foo();
+```
+
+Module base class designed to be overridden. Extends from Node.js EventEmitter class.
+
+#### `constructor()`
+
+You must call `super()` in overridden constructor. Use constructor only to get configuraion and dependencies as arguments and save them to module `this` context. Any initialization should go in `async init()` method.
+
+#### Event: `'init'`
+
+Emitted after the `async init()` is executed.
+
+#### Event: `'destroy'`
+
+Emitted before the `async destroy()` is executed.
+
+#### `traverse(fn)`
+
+Calls the `fn` function on this module and on each child modules recursively.
+
+#### `use(mod)`
+
+Add module `mod` as a child. Returns `mod`. Should be called before the initialization chain of modules tree is executed.
+
+#### `async init()`
+
+Override this function and place any initialization code here.
+
+#### `async destroy()`
+
+Override this function and destroy all the used resources like timers and connections.
+
+### `App`
+
+```js
+const hurp = require('hurp');
+
+class App extends hurp.App {}
+
+const app = new App();
+```
+
+App base class designed to be overridden and used as root module. Extends from Module class, so all Module methods and events are here.
+
+#### `constructor()`
+
+You must call `super()` in overridden constructor. Use constructor only to get configuraion as arguments and create and `use()` other modules your application built from.
+
+#### Event: `'online'`
+
+Emitted after whole modules tree including App is initialized.
+
+#### Event: `'offline'`
+
+Emitted after whole modules tree including App is destroyed.
+
+#### `async boot()`
+
+Runs the initialization chain of modules tree. Recursively initializes all the modules from children to parent.
+
+#### `async shutdown()`
+
+Runs the destoying chain of modules tree. Recursively destroys all the modules from parent to children.
