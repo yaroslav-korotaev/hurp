@@ -2,12 +2,6 @@ const sinon = require('sinon');
 const { App } = require('../lib');
 
 describe('app.js', function () {
-  it('holds a reference to itself', function () {
-    const app = new App();
-    
-    expect(app.app).to.be.equal(app);
-  });
-  
   it('boot() and emits \'online\'', async function () {
     const app = new App();
     

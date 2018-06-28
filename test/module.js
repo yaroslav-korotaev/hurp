@@ -17,29 +17,6 @@ describe('module.js', function () {
     expect(a.modules).to.have.ordered.members([b, c]);
   });
   
-  it('passes app reference to deeply nested modules', function () {
-    const a = new Module();
-    const b = new Module();
-    const c = new Module();
-    const d = new Module();
-    const e = new Module();
-    
-    a.app = a;
-    
-    // Attach a whole subtree
-    b.use(c);
-    a.use(b);
-    
-    // Attach a subtree one by one
-    a.use(d);
-    d.use(e);
-    
-    expect(b.app).to.be.equal(a);
-    expect(c.app).to.be.equal(a);
-    expect(d.app).to.be.equal(a);
-    expect(e.app).to.be.equal(a);
-  });
-  
   it('traverses all the tree', function () {
     const a = new Module();
     const b = new Module();
