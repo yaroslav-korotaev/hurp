@@ -1,9 +1,15 @@
-const sinon = require('sinon');
-const { App } = require('../lib');
+import { expect } from 'chai';
+import sinon from 'sinon';
+import { App } from '../src';
+import { HackedApp } from './types';
+
+function createApp(): HackedApp {
+  return new App() as any;
+}
 
 describe('app.js', function () {
   it('boot() and emits \'online\'', async function () {
-    const app = new App();
+    const app = createApp();
     
     const listener = sinon.spy();
     sinon.stub(app, 'init').resolves();
@@ -17,7 +23,7 @@ describe('app.js', function () {
   });
   
   it('shutdown() and emits \'offline\'', async function () {
-    const app = new App();
+    const app = createApp();
     
     const listener = sinon.spy();
     sinon.stub(app, 'destroy').resolves();

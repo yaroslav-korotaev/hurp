@@ -1,1 +1,2 @@
---require chai/register-expect
+--require ts-node/register
+test/**/*.ts

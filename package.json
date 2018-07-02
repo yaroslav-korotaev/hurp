@@ -1,6 +1,6 @@
 {
   "name": "hurp",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Asynchronous modules for Node.js applications",
   "keywords": [
     "hurp",
@@ -16,17 +16,26 @@
   "main": "lib/index.js",
   "repository": "yaroslav-korotaev/hurp",
   "scripts": {
-    "lint": "eslint lib",
-    "pretest": "run-s lint",
-    "test": "mocha"
+    "build": "tsc",
+    "lint:src": "tslint -c tslint.json -p tsconfig.json",
+    "lint:test": "tslint -c tslint.test.json -p tsconfig.test.json",
+    "lint": "run-s lint:src lint:test",
+    "test": "nyc mocha"
   },
   "dependencies": {},
   "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.4",
+    "@types/node": "^10.5.1",
+    "@types/sinon": "^5.0.1",
     "chai": "^4.1.2",
-    "eslint": "^4.17.0",
-    "eslint-config-highload": "^1.0.0",
-    "mocha": "^5.0.0",
-    "npm-run-all": "^4.1.2",
-    "sinon": "^4.2.3"
+    "mocha": "^5.2.0",
+    "npm-run-all": "^4.1.3",
+    "nyc": "^12.0.2",
+    "sinon": "^6.0.1",
+    "ts-node": "^7.0.0",
+    "tslint": "^5.10.0",
+    "tslint-config-hurp": "^1.0.0",
+    "typescript": "^2.9.2"
   }
 }

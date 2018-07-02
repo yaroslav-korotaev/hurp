@@ -6,7 +6,9 @@ A little framework lets you design your application as a composition of asynchro
 
 Basically, async module is a class that can be initialized and destroyed asynchronously, e.g. with `async init()` and `async destroy()` methods. Modules can be hierarchically composed. This framework just implements this ideas.
 
-It comes to help when you want to use simple manual dependency injection via constructor in application composed from a set of independed modules, some of which are requires to be asynchronously initialized.
+It comes to help when you want to use simple manual dependency injection via constructor in application composed from a set of independent modules, some of which are requires to be asynchronously initialized.
+
+Written in TypeScript, so typings are fully supported.
 
 ## Installation
 
@@ -16,7 +18,7 @@ $ npm install hurp
 
 ## Usage
 
-Library exports classes `Module` and `App`, that designed to be overridden.
+Library exports classes `Module` and `App` which are designed to be overridden.
 
 ```js
 const hurp = require('hurp');
@@ -164,7 +166,7 @@ const http = require('http');
 const hurp = require('hurp');
 
 function bootstrap(app) {
-  // Use your favorite web framework here and place the app reference to it request context
+  // Use your favorite web framework here and place the app reference to request context
   
   return async (req, res) => {
     const data = await app.db.get();

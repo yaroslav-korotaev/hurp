@@ -1,26 +1,30 @@
-const EventEmitter = require('events');
+import EventEmitter from 'events';
 
-class Module extends EventEmitter {
+type TraverseCallback = (mod: Module) => void;
+
+export default class Module extends EventEmitter {
+  private readonly modules: Module[];
+  
   constructor() {
     super();
     
     this.modules = [];
   }
   
-  traverse(fn) {
+  public traverse(fn: TraverseCallback): void {
     fn(this);
     
     for (const mod of this.modules)
       mod.traverse(fn);
   }
   
-  use(mod) {
+  public use<M extends Module>(mod: M): M {
     this.modules.push(mod);
     
     return mod;
   }
   
-  async callInit() {
+  protected async callInit(): Promise<void> {
     for (const mod of this.modules) {
       await mod.callInit();
       
@@ -32,11 +36,11 @@ class Module extends EventEmitter {
     this.emit('init');
   }
   
-  async init() {
+  protected async init(): Promise<void> {
     // Empty
   }
   
-  async callDestroy() {
+  protected async callDestroy(): Promise<void> {
     this.emit('destroy');
     
     await this.destroy();
@@ -46,9 +50,7 @@ class Module extends EventEmitter {
       await mod.callDestroy();
   }
   
-  async destroy() {
+  protected async destroy(): Promise<void> {
     // Empty
   }
 }
-
-module.exports = Module;

@@ -1,15 +1,21 @@
-const sinon = require('sinon');
-const { Module } = require('../lib');
+import { expect } from 'chai';
+import sinon from 'sinon';
+import { Module } from '../src';
+import { HackedModule } from './types';
 
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+async function delay(ms: number): Promise<void> {
+  await new Promise<void>(resolve => setTimeout(resolve, ms));
+}
+
+function createModule(): HackedModule {
+  return new Module() as any;
 }
 
 describe('module.js', function () {
   it('composing modules', function () {
-    const a = new Module();
-    const b = new Module();
-    const c = new Module();
+    const a = createModule();
+    const b = createModule();
+    const c = createModule();
     
     a.use(b);
     a.use(c);
@@ -18,10 +24,10 @@ describe('module.js', function () {
   });
   
   it('traverses all the tree', function () {
-    const a = new Module();
-    const b = new Module();
-    const c = new Module();
-    const d = new Module();
+    const a = createModule();
+    const b = createModule();
+    const c = createModule();
+    const d = createModule();
     
     a.use(b);
     b.use(c);
@@ -38,16 +44,16 @@ describe('module.js', function () {
   });
   
   it('can init() and destroy() if methods are not overriden', async function () {
-    const a = new Module();
+    const a = createModule();
     
     await a.callInit();
     await a.callDestroy();
   });
   
   it('catching submodule errors', async function () {
-    const a = new Module();
-    const b = new Module();
-    const c = new Module();
+    const a = createModule();
+    const b = createModule();
+    const c = createModule();
     
     a.use(b);
     b.use(c);
@@ -64,7 +70,7 @@ describe('module.js', function () {
   });
   
   it('waits for init() and then emits \'init\'', async function () {
-    const a = new Module();
+    const a = createModule();
     
     const listener = sinon.spy();
     const check = sinon.spy();
@@ -84,7 +90,7 @@ describe('module.js', function () {
   });
   
   it('emits \'destroy\' and then waits for destroy()', async function () {
-    const a = new Module();
+    const a = createModule();
     
     const listener = sinon.spy();
     const check = sinon.spy();
@@ -104,11 +110,11 @@ describe('module.js', function () {
   });
   
   it('init all the tree in right order', async function () {
-    const a = new Module();
-    const b = new Module();
-    const c = new Module();
-    const d = new Module();
-    const e = new Module();
+    const a = createModule();
+    const b = createModule();
+    const c = createModule();
+    const d = createModule();
+    const e = createModule();
     
     sinon.stub(a, 'init').resolves();
     sinon.stub(b, 'init').resolves();
@@ -136,11 +142,11 @@ describe('module.js', function () {
   });
   
   it('destroy all the tree in reverse order', async function () {
-    const a = new Module();
-    const b = new Module();
-    const c = new Module();
-    const d = new Module();
-    const e = new Module();
+    const a = createModule();
+    const b = createModule();
+    const c = createModule();
+    const d = createModule();
+    const e = createModule();
     
     sinon.stub(a, 'destroy').resolves();
     sinon.stub(b, 'destroy').resolves();
