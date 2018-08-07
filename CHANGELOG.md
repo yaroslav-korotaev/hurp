@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.0.1] - 2018-08-07
+### Changed
+- Fix broken 2.0.0 package
+
 ## [2.0.0] - 2018-07-03
 ### Changed
 - Rewritten in TypeScript
