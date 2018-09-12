@@ -13,29 +13,28 @@
   "files": [
     "lib"
   ],
-  "main": "lib/index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "repository": "yaroslav-korotaev/hurp",
   "scripts": {
-    "build": "tsc",
-    "lint:src": "tslint -c tslint.json -p tsconfig.json",
-    "lint:test": "tslint -c tslint.test.json -p tsconfig.test.json",
+    "lint:src": "tslint -c tslint.json -p tsconfig.json -t stylish",
+    "prelint:test": "tsc -p tsconfig.test.json",
+    "lint:test": "tslint -c tslint.test.json -p tsconfig.test.json -t stylish",
     "lint": "run-s lint:src lint:test",
-    "test": "nyc mocha"
+    "build": "tsc",
+    "test": "jest"
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/chai": "^4.1.4",
-    "@types/mocha": "^5.2.4",
-    "@types/node": "^10.5.1",
-    "@types/sinon": "^5.0.1",
-    "chai": "^4.1.2",
-    "mocha": "^5.2.0",
+    "@types/jest": "^23.3.2",
+    "@types/node": "^10.9.4",
+    "jest": "^23.6.0",
+    "jest-extended": "^0.8.1",
     "npm-run-all": "^4.1.3",
-    "nyc": "^12.0.2",
-    "sinon": "^6.0.1",
-    "ts-node": "^7.0.0",
-    "tslint": "^5.10.0",
-    "tslint-config-hurp": "^1.0.0",
-    "typescript": "^2.9.2"
+    "ts-jest": "^23.1.4",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "tslint-config-hurp": "^1.2.0",
+    "typescript": "^3.0.3"
   }
 }
