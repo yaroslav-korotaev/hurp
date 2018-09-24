@@ -22,7 +22,7 @@ $ npm install hurp
 
 ## Usage
 
-You can design your application as a set of independent modules, wiring them together in a single composition root. Modules should depends only on interfaces, implementations gets injected manually in a root class constructor.
+You can design your application as a set of independent modules, wiring them together in a single composition root. Modules should depend only on interfaces, implementations gets injected manually in a root class constructor.
 
 Package exports a `Hurp` class. It is a container for async modules. You can add child modules with a `use()` method. Next, when you call its `init()` method, it will sequentially call `init()` method on every child module in that order in which they were added. Its `destroy()` method behaves similarly, but in reverse order.
 
