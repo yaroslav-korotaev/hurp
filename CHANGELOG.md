@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.0.0] - 2018-09-24
+### Changed
+- Rewritten from scratch to make it simple
+
 ## [2.0.1] - 2018-08-07
 ### Changed
 - Fix broken 2.0.0 package
