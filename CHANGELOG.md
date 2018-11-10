@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.0.1] - 2018-11-11
+### Changed
+- Dependencies are updated
+
 ## [3.0.0] - 2018-09-24
 ### Changed
 - Rewritten from scratch to make it simple
