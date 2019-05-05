@@ -7,9 +7,8 @@ module.exports = {
   coverageReporters: ['lcov', 'text'],
   moduleFileExtensions: ['js', 'ts'],
   roots: ['<rootDir>/src'],
-  setupTestFrameworkScriptFile: 'jest-extended',
   testEnvironment: 'node',
-  testMatch: ['**/__tests__/**/*.ts'],
+  testMatch: ['<rootDir>/src/**/__tests__/**/*.ts'],
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
