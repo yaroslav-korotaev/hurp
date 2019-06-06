@@ -1,20 +1,17 @@
-// Importing 'jest-extended' explicitly for VS Code IntelliSense support until the better solution
-// is found
-// tslint:disable-next-line:no-import-side-effect
-import 'jest-extended';
 import Hurp from '../index';
 
-function createModule() {
+function createModule(marks: string[], prefix: string) {
   return {
-    init: jest.fn(async () => { /* empty */ }),
-    destroy: jest.fn(async () => { /* empty */ }),
+    init: jest.fn(async () => { marks.push(`${prefix}-init`); }),
+    destroy: jest.fn(async () => { marks.push(`${prefix}-destroy`); }),
   };
 }
 
 describe('Hurp', () => {
   test('initializes modules', async () => {
-    const a = createModule();
-    const b = createModule();
+    const marks = [] as string[];
+    const a = createModule(marks, 'a');
+    const b = createModule(marks, 'b');
     
     const app = new Hurp();
     app.use(a);
@@ -22,14 +19,13 @@ describe('Hurp', () => {
     
     await app.init();
     
-    expect(a.init).toHaveBeenCalled();
-    expect(b.init).toHaveBeenCalled();
-    expect(a.init).toHaveBeenCalledBefore(b.init);
+    expect(marks).toEqual(['a-init', 'b-init']);
   });
   
   test('destroying modules in revese order', async () => {
-    const a = createModule();
-    const b = createModule();
+    const marks = [] as string[];
+    const a = createModule(marks, 'a');
+    const b = createModule(marks, 'b');
     
     const app = new Hurp();
     app.use(a);
@@ -37,8 +33,6 @@ describe('Hurp', () => {
     
     await app.destroy();
     
-    expect(a.destroy).toHaveBeenCalled();
-    expect(b.destroy).toHaveBeenCalled();
-    expect(b.destroy).toHaveBeenCalledBefore(a.destroy);
+    expect(marks).toEqual(['b-destroy', 'a-destroy']);
   });
 });
