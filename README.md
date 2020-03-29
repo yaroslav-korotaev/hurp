@@ -31,11 +31,11 @@ Because `Hurp` instance has an `async init()` and `async destroy()` method, it i
 So, you can extend the `Hurp` class to make something like `App` class, which will be a composition root of your application. Next, create all the things in its constructor, wire them up and `use()` async modules.
 
 ```typescript
-import Hurp from 'hurp';
-import Foo from './foo';
-import Bar from './bar';
+import { Hurp } from 'hurp';
+import { Foo } from './foo';
+import { Bar } from './bar';
 
-export default class App extends Hurp {
+export class App extends Hurp {
   public foo: Foo;
   public bar: Bar;
   
@@ -54,7 +54,7 @@ export default class App extends Hurp {
 Now application can be launched with something like this:
 
 ```typescript
-import App from './app';
+import { App } from './app';
 
 async function main() {
   const app = new App();
@@ -69,10 +69,18 @@ main().catch(err => console.error(`boot failed: ${err.message}`));
 
 ## API
 
+### `Module`
+
+```typescript
+import { Module } from 'hurp';
+```
+
+A module public interface. Has a methods `init()` and `destory()`, described below.
+
 ### `Hurp`
 
 ```typescript
-import Hurp from 'hurp';
+import { Hurp } from 'hurp';
 ```
 
 A class, container for async modules. You may extend it with your composition root implementation.
