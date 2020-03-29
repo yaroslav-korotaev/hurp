@@ -1,3 +1,20 @@
+# [4.0.0](https://github.com/yaroslav-korotaev/hurp/compare/v3.0.3...v4.0.0) (2020-03-29)
+
+
+### Code Refactoring
+
+* export Hurp class as non-default ([44d4db3](https://github.com/yaroslav-korotaev/hurp/commit/44d4db33d9fb8584a02a3b0ef4ccf4a5a64187d9))
+
+
+### Features
+
+* update TypeScript config ([934e9dd](https://github.com/yaroslav-korotaev/hurp/commit/934e9dda5e4e543bf603a28187aea11e832f0bca))
+
+
+### BREAKING CHANGES
+
+* Now the Hurp is a general, non-default export.
+
 # Changelog
 
 ## [3.0.3] - 2019-06-06
