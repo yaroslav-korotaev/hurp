@@ -1,3 +1,10 @@
+## [4.0.2](https://github.com/yaroslav-korotaev/hurp/compare/v4.0.1...v4.0.2) (2020-03-29)
+
+
+### Bug Fixes
+
+* bump version ([de7833b](https://github.com/yaroslav-korotaev/hurp/commit/de7833b6ad8d0a83317c43eb557fb3b087267155))
+
 ## [4.0.1](https://github.com/yaroslav-korotaev/hurp/compare/v4.0.0...v4.0.1) (2020-03-29)
 
 
