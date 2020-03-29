@@ -3,7 +3,7 @@ export interface Module {
   destroy(): Promise<void>;
 }
 
-export default class Hurp {
+export class Hurp {
   private readonly modules: Module[];
   
   constructor() {
