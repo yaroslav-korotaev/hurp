@@ -1,4 +1,4 @@
-import Hurp from '../index';
+import { Hurp } from '../index';
 
 function createModule(marks: string[], prefix: string) {
   return {
